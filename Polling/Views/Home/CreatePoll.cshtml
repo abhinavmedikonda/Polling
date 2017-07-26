@@ -1,0 +1,50 @@
+﻿@model Polling.Models.Poll
+
+@{
+    ViewBag.Title = "CreatePoll";
+}
+
+<h2>Create Poll</h2>
+
+@using(Html.BeginForm("CreatePoll", "Home"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m=> m.Name, "Poll Name")
+        @Html.TextBoxFor(m=> m.Name, new { @class= "form-control"})
+        @Html.ValidationMessageFor(m=> m.Name)
+    </div>
+    <div id="itemRows">
+        @for (int i = 0; i < Model.Items.Count; i++)
+        {
+            <div class="form-group itemRow">
+                @Html.LabelFor(m => m.Items[i].Name, "Item Name")
+                @Html.TextBoxFor(m => m.Items[i].Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Items[i].Name)
+            </div>
+        }
+    </div>
+    <div>
+        @Html.ActionLink("Add Item", "ItemRow", null, new { id = "addItem" })
+    </div>
+    <br /><br />
+    <div>
+        <input type="submit" value="Create Poll" class="btn btn-primary" />
+    </div>
+}
+
+<script type="text/javascript">
+    //$("#addItem").click(function() {
+    //    $.ajax({
+    //        url: this.href,
+    //        cache: false,
+    //        success: function (html) { $("#itemRows").append(html); }
+    //    });
+    //    return false;
+    //})
+
+    $("#addItem").click(function() {
+        var rowCount = $('.itemRow').length;
+        $("#itemRows").append('<div class="form-group itemRow"><label for="Items_' + rowCount + '__Name">Item Name</label><input class="input-validation-error form-control" data-val="true" data-val-required="The Name field is required." id="Items_' + rowCount + '__Name" name="Items[' + rowCount + '].Name" type="text" value=""><span class="field-validation-valid" data-valmsg-for="Items[' + rowCount + '].Name" data-valmsg-replace="true"></span></div>');
+        return false;
+    });
+</script>

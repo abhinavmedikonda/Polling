@@ -1,0 +1,136 @@
+﻿@using Microsoft.AspNet.Identity
+@model List<Polling.Models.PollViewModel>
+
+@{
+    ViewBag.Title = "Poll";
+}
+<div class="row">
+    <div class="col-sm-3">
+        <h2>@ViewBag.Poll</h2>
+    </div>
+    <div class="col-sm-9 align-middle">
+        @if (User.Identity.IsAuthenticated)
+        {
+            using (Html.BeginForm("SharePoll", "Home", FormMethod.Post, new {@style= "display: inline-block"}))
+            {
+                <div class="form-group" style="display: inline-block;">
+                    @Html.HiddenFor(m => m.First().PollId, new { @style = "display: inline-block" })
+                    @Html.TextBox("emailAdress", null, new { @class = "form-control", placeholder = "email@abc.com", id = "email", @style = "display: inline-block;" })
+                    <button type="submit" class="btn btn-link" id='validate' disabled style="display: inline-block;">Share</button>
+                </div>
+            }
+            using (Html.BeginForm("DeletePoll", "Home", FormMethod.Post, new { @class= "align-middle", @style = "display: inline-block" }))
+            {
+                <div class="form-group" style="display: inline-block;">
+                    @Html.HiddenFor(m => m.First().PollId)
+                    <button type="submit" class="btn btn-link" id='delete'>Delete Poll</button>
+                </div>
+            }
+        }
+    </div>
+</div>
+<div class="container">
+    <div class="row container">
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-2 well">
+                <div>@item.Name</div>
+                <div>@item.Votes.Count()</div>
+            </div>
+        }
+    </div>
+    <div class="row container">
+        @using (Html.BeginForm("AddItem", "Home"))
+            {
+            @Html.TextBox("itemName", null, new { @class = "form-control" })
+            @Html.HiddenFor(m=> m.First().PollId)
+            <button type="submit" class="btn btn-link">Add Item</button>
+        }
+    </div>
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <h3>Your Vote</h3>
+    <div class="container">
+    @using (Html.BeginForm("Vote", "Home"))
+    {
+        <div class="row container">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+            <div class="col-sm-2 well">
+                <div>@Model[i].Name</div>
+                <div>@Html.CheckBoxFor(m => m[i].IsChecked)</div>
+            </div>
+            @Html.HiddenFor(m => m[i].Id)
+            @Html.HiddenFor(m => m[i].PollId)
+            }
+        </div>
+        <div class="row container">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    }
+    </div>
+}
+
+<script type="text/javascript">
+    function validateEmail(email) {
+        var re = /\S+@@\S+\.\S+/;
+        return re.test(email);
+    }
+
+    function validate() {
+      $("#result").text("");
+      var email = $("#email").val();
+      if (validateEmail(email)) {
+          $("#validate").attr("disabled", false);
+      } else {
+          $("#validate").attr("disabled", true);
+      }
+      return false;
+    }
+
+    $("#email").bind("input", validate);
+</script>
+
+@*<div class="checkbox">
+        <label for="voteCheckBox">Vote
+            <input id="voteCheckBox" type="checkbox" onchange="valueChanged()" checked=@voted/>
+        </label>
+    </div>
+    <div class="form-group">
+            <div class="radio">
+                <label for = "yesRadio" id="yesLabel">Yes</label>
+                @Html.RadioButtonFor(m => m.Vot, true, new { id = "yesRadio" })
+            </div>
+            <div class="radio">
+                <label for="noRadio" id="noLabel">No</label>
+                @Html.RadioButtonFor(m => m.Vot, false, new { id = "noRadio" })
+            </div>
+            @Html.RadioButtonFor(m => m.Vot, "null", new { id = "hiddenRadio", @Style= "display: none" })
+        </div>
+        @Html.HiddenFor(m => m.VoteId)
+        @Html.HiddenFor(m => m.ItemId)
+        <button type="submit" class="btn btn-primary">Submit</button>
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (!$('#voteCheckBox').is(":checked"))
+            valueChanged()
+        })
+    function valueChanged(){
+        $("#hiddenRadio").prop("checked", true)
+        if ($('#voteCheckBox').is(":checked")) {
+            $("#noRadio").prop("disabled", false)
+            $("#yesRadio").prop("disabled", false)
+            $("#noLabel").prop("disabled", false)
+            $("#yesLabel").prop("disabled", false)
+        }
+        else {
+            $("#noRadio").prop("disabled", true)
+            $("#yesRadio").prop("disabled", true)
+            $("#noLabel").prop("disabled", true)
+            $("#yesLabel").prop("disabled", true)
+        }
+    }
+    </script>*@
