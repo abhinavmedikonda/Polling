@@ -23,14 +23,14 @@ namespace Polling.Repositories
             return this._context.SaveChanges() == 1;
         }
 
-        public Vote GetVoteByItemId(int theItemId)
+        public Vote GetVoteByItemId(int theItemId, string theUserId)
         {
-            return this._context.Votes.SingleOrDefault(x => x.ItemId == theItemId);
+            return this._context.Votes.SingleOrDefault(x => x.ItemId == theItemId && x.AspNetUserId == theUserId);
         }
 
-        public bool Remove(int theId)
+        public bool Remove(int theId, string theUserId)
         {
-            this._context.Votes.Remove(this._context.Votes.SingleOrDefault(x => x.Id == theId));
+            this._context.Votes.Remove(this._context.Votes.SingleOrDefault(x => x.ItemId == theId && x.AspNetUserId == theUserId));
 
             return this._context.SaveChanges() == 1;
         }

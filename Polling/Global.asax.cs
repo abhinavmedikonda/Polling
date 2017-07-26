@@ -17,5 +17,10 @@ namespace Polling
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Response.Redirect("/Home/Error");
+        }
     }
 }

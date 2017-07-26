@@ -135,15 +135,17 @@ namespace Polling.Controllers
 
         public ActionResult Vote(List<PollViewModel> pollViewModelS)
         {
-            foreach(PollViewModel pollViewModel in pollViewModelS)
+            string userId = User.Identity.GetUserId();
+
+            foreach (PollViewModel pollViewModel in pollViewModelS)
             {
-                if(this._IVoteRepository.GetVoteByItemId(pollViewModel.Id) == null)
+                if(this._IVoteRepository.GetVoteByItemId(pollViewModel.Id, userId) == null)
                 {
                     if (pollViewModel.IsChecked)
                     {
                         this._IVoteRepository.Add(new Vote
                         {
-                            AspNetUserId = User.Identity.GetUserId(),
+                            AspNetUserId = userId,
                             ItemId = pollViewModel.Id
                         });
                     }
@@ -152,12 +154,17 @@ namespace Polling.Controllers
                 {
                     if (!pollViewModel.IsChecked)
                     {
-                        this._IVoteRepository.Remove(pollViewModel.Id);
+                        this._IVoteRepository.Remove(pollViewModel.Id, userId);
                     }
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Poll", new { id = pollViewModelS.First().PollId });
+        }
+
+        public ActionResult Error()
+        {
+            return View("~/Views/Shared/Error.cshtml");
         }
 
         private static string RenderViewToString(ControllerContext context, string viewName, object model)

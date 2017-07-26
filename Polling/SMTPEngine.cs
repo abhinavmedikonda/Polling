@@ -17,7 +17,7 @@ namespace Polling
                     EnableSsl = true
                 };
 
-                MailMessage mailMesage = new MailMessage(emailAdress, emailAdress, "test", emailBody);
+                MailMessage mailMesage = new MailMessage(emailAdress, emailAdress, "Poll", emailBody);
                 mailMesage.IsBodyHtml = true;
 
                 client.Send(mailMesage);
